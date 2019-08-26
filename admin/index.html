@@ -10,6 +10,8 @@
     <script src="./app.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 
+    <link href="./style.css" rel="stylesheet" />
+
     <title>AUSL Admin</title>
     <style>
         .divider {
@@ -29,18 +31,49 @@
 </head>
 
 <body>
-    <h3>AUSL Admin - Team/Leads Information</h3>
-    <div id="app_container">
+    <nav>
+        <div class="nav-wrapper blue darken-4">
+            <a href="#" class="brand-logo">AUSL - Admin</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a href="#">Site Data</a></li>
+                <li><a href="#">Admins</a></li>
+                <li><a href="#">Documents</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="row" style="margin-top: 6px;">
+        <div class="col s8 offset-s2">
+            <ul class="tabs">
+                <li class="tab col s3"><a href="#general">General</a></li>
+                <li class="tab col s3"><a href="#team">Team Info</a></li>
+                <li class="tab col s3"><a href="#sponsor">Sponsor/TA</a></li>
+                <li class="tab col s3"><a href="#media">Media Carousel</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="divider"></div>
+
+    <div id="team_info_container">
+        <div class="year-selector row">
+            <div class="col s3 offset-s2">
+                <label for="choose_year">Choose academic year</label>         
+                <select id="choose_year" class="browser-default" v-on:change="changeYear">
+                    <option value="2019">2019-2020</option>
+                    <option value="2018">2018-2019</option>
+                </select>
+            </div>
+        </div>
+        <div class="divider"></div>
         <div id="team_information_rows">
-            <div class="divider"></div>
             <div class="row-container row" v-for="(team, idx) in teams" :data-id="idx">
                 <div class="col s1 offset-s2">
                     <div>
-                        <a class="waves-effect waves-light btn" ref="tooltipped"><i class="material-icons">arrow_upward</i></a>
+                        <a class="waves-effect waves-light btn blue lighten-1" v-on:click="moveTeamUp(idx)"><i class="material-icons">arrow_upward</i></a>
                     </div>
                     Team #{{idx + 1}}
                     <div>
-                        <a class="waves-effect waves-light btn" ref="tooltipped"><i class="material-icons">arrow_downward</i></a>   
+                        <a class="waves-effect waves-light btn blue lighten-1" v-on:click="moveTeamDown(idx)"><i class="material-icons">arrow_downward</i></a>   
                     </div>
                 </div>
                 <div class="col s6">
@@ -69,7 +102,7 @@
                     </div>
                     <div class="row-actions row">
                         <div class="col s3 offset-s9">
-                            <a style="float: right" class="waves-effect waves-light btn red darken-3" v-on:click="removeTeam(idx)"><i class="material-icons left">remove</i>remove</a>
+                            <a style="float: right" class="waves-effect waves-light btn red" v-on:click="removeTeam(idx)"><i class="material-icons left">remove</i>remove</a>
                         </div>
                     </div>
                 </div>
@@ -86,9 +119,23 @@
             z-index: 10;
             padding: 15px 0;
             border-radius: 10px 10px 0 0;">
-            <div class="col s6 offset-s3">
-                <a class="waves-effect waves-light btn" v-on:click="addTeam"><i class="material-icons left">add</i>add team lead</a>
-                <a class="waves-effect waves-light btn" v-bind:class=" { disabled: !unsavedChanges } " v-on:click="saveChanges"><i class="material-icons left">check</i>save changes</a>
+            <div class="col s12 center-align">
+                <a class="waves-effect waves-light btn blue" v-on:click="addTeam"><i class="material-icons left">add</i>add team lead</a>
+                <a class="waves-effect waves-light btn blue"  v-on:click="saveChanges" v-bind:class=" { disabled: !unsavedChanges } "><i class="material-icons left">check</i>save changes</a>
+                <a class="waves-effect waves-light btn red modal-trigger" href="#confirm-discard-changes" v-bind:class=" { disabled: !unsavedChanges } "><i class="material-icons left">delete</i>discard changes</a>
+            </div>
+        </div>
+
+
+        <!-- confirm discard changes modal -->
+        <div id="confirm-discard-changes" class="modal">
+            <div class="modal-content">
+                <h4>Discard Changes</h4>
+                <p>Are you sure you want to discard all changes since you last saved?</p>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="modal-close waves-effect waves-green btn-flat" v-on:click="discardChanges">Discard</a>
+                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancel</a>
             </div>
         </div>
     </div>
