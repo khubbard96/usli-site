@@ -1,0 +1,11 @@
+# Protect log.txt
+# Protect log.txt
+<Files ./log.txt>
+Order Allow,Deny
+Deny from all
+</Files>
+
+AuthType Basic
+AuthName "Password Protected Area"
+AuthUserFile /Users/Kevin/source/repos/usli-site/admin/.htpasswd
+Require valid-user

@@ -1,0 +1,106 @@
+<html>
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    <script src="./app.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
+    <title>AUSL Admin</title>
+    <style>
+        .divider {
+            margin: 10px 0;
+        }
+
+        .row-container textarea {
+            min-height: 150px;
+        }
+
+        .site-information {
+            font-size: 10pt !important;
+            color: grey;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+    <h3>AUSL Admin - Team/Leads Information</h3>
+    <div id="app_container">
+        <div id="team_information_rows">
+            <div class="divider"></div>
+            <div class="row-container row" v-for="(team, idx) in teams" :data-id="idx">
+                <div class="col s1 offset-s2">
+                    <div>
+                        <a class="waves-effect waves-light btn" ref="tooltipped"><i class="material-icons">arrow_upward</i></a>
+                    </div>
+                    Team #{{idx + 1}}
+                    <div>
+                        <a class="waves-effect waves-light btn" ref="tooltipped"><i class="material-icons">arrow_downward</i></a>   
+                    </div>
+                </div>
+                <div class="col s6">
+                    <div class="row">
+                        <div class="col s6 input-field">
+                            <input placeholder="Team Lead" id="team_lead" type="text" v-model="team.teamLead" />
+                            <label for="team_lead">Team Lead</label>
+                        </div>
+                        <div class="col s6 input-field">
+                            <input placeholder="Lead Email" id="lead_email" type="text" v-model="team.email" />
+                            <label for="lead_email">Lead Email</label>
+                        </div>
+                        <div class="col s12 input-field">
+                            <input placeholder="Team Name/Description" id="team_name" type="text" v-model="team.teamName" />
+                            <label for="team_name">Team Name/Description</label>
+                        </div>
+                        <div class="col s12 input-field">
+                            <div style="font-size: 0.8rem; color: #9e9e9e;">Lead Picture</div>
+                            <div class="">{{ team.image }}</div>
+                            <input type="file" />
+                        </div>
+                        <div class="col s12 input-field">
+                            <textarea class="materialize-textarea" placeholder="Team Lead Description" id="lead_description" v-model="team.desc" style="margin: 7px 0;"></textarea>
+                            <label for="lead_description">Team Lead Description</label>
+                        </div>
+                    </div>
+                    <div class="row-actions row">
+                        <div class="col s3 offset-s9">
+                            <a style="float: right" class="waves-effect waves-light btn red darken-3" v-on:click="removeTeam(idx)"><i class="material-icons left">remove</i>remove</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col s12 divider"></div>
+            </div>
+
+        </div>
+        <div class="page-actions row" style=
+            "position: fixed; 
+            bottom: 0; 
+            width: 65%; 
+            margin: 0 17.5%; 
+            background-color: rgba(0, 0, 0, .6);
+            z-index: 10;
+            padding: 15px 0;
+            border-radius: 10px 10px 0 0;">
+            <div class="col s6 offset-s3">
+                <a class="waves-effect waves-light btn" v-on:click="addTeam"><i class="material-icons left">add</i>add team lead</a>
+                <a class="waves-effect waves-light btn" v-bind:class=" { disabled: !unsavedChanges } " v-on:click="saveChanges"><i class="material-icons left">check</i>save changes</a>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="site-information">
+        <div>Tool by Kevin Hubbard</div>
+        <div>AU C/O 2019</div>
+        <div>klh0058@auburn.edu / 1hubbardkl@gmail.com</div>
+        <div>Site made using Materialize and Vue.js</div>
+    </div>
+    
+</body>
+
+</html>

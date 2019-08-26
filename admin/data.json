@@ -1,0 +1,78 @@
+{
+    "siteConfig": {
+        "lmod": "",
+        "lmodBy": ""
+    },
+    "users": [
+        {
+            "email": "bac0037",
+            "password": "abcd1234"
+        }
+    ],
+    "siteData": {
+        "2019":{
+            "projectName": "Project NOVA II",
+            "teamInfo":[
+                {
+                    "teamName": "Team Leader",
+                    "teamLead": "Ben Creel",
+                    "leadEmail": "bac0037@auburn.edu",
+                    "leadDesc": "Ben is on that gang shit",
+                    "leadImage": "image src"
+                },
+                {
+                    "teamName": "Recovery",
+                    "teamLead": "Ben's friend",
+                    "leadEmail": "someemailidk",
+                    "leadDesc": "Ben's friend is certainly less on that gang shit.",
+                    "leadImage": "another image src"
+                }
+            ],
+            "documents":[
+                {
+                    "type": "proposal",
+                    "title": "Proposal Documents",
+                    "docs": {
+                        "Proposal": "Proposal2019.pdf"
+                    }
+                },
+                {
+                    "type": "pdr",
+                    "title": "Preliminary Design Review Documents",
+                    "docs": {
+                        "Preliminary Design Report": "PDRReport.pdf",
+                        "Preliminary Design Flysheet": "PDRFlysheet.pdf",
+                        "Preliminary Design Presentation": "PDRPresentation.pdf"
+                    }
+                },
+                {
+                    "type": "cdr",
+                    "title": "Critical Design Review Documents",
+                    "docs": {
+                        "Critical Design Review": "CDR.pdf",
+                        "Critical Design Presentation": "CDR.pdf",
+                        "Critical Design Review Flysheet": "cdr.pdf"
+                    }
+                },
+                {
+                    "type": "frr",
+                    "title": "Flight Readiness Review Documents",
+                    "docs":{
+                        "FRR Report": "frr.pdf",
+                        "FRR Presentation": "frr.pdf",
+                        "FRR Flysheet": "frr.pdf"
+                    }                      
+                },
+                {
+                    "type": "plar",
+                    "title": "Post-Launch Assessment Review",
+                    "docs": {
+                        "Post Launch Review": "plar.pdf"
+                    }
+                }
+            ],
+            "carousel": [],
+            "outreach":[]
+        }
+    }
+}
