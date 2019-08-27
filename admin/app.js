@@ -2,22 +2,6 @@
 Array.prototype.move = function (from, to) {
     this.splice(to, 0, this.splice(from, 1)[0]);
 };
-
-
-//pull site data
-function loadData() {
-    let xhttp = new XMLHttpRequest();
-    let filename = "./archive/teaminformation.json";
-    xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            // Typical action to be performed when the document is ready:
-            let teamData = JSON.parse(xhttp.responseText);
-            updateView(teamData["2019"]);
-        }
-    };
-    xhttp.open("GET", filename, true);
-    xhttp.send();
-};
 var teamInformationApp;
 window.onload = function() {
     teamInformationApp = new Vue({
@@ -26,6 +10,7 @@ window.onload = function() {
             teams: [],
             unsavedChanges: false,
             originalData: [],
+            selectedYear: "2019",
         },
         methods: {
             addTeam: function() {
@@ -37,7 +22,11 @@ window.onload = function() {
                     "desc": "",
                     "image": ""
                 };
-                this.teams.push(newTemplate)
+                this.teams.push(newTemplate);
+                let self = this;
+                Vue.nextTick(() => {
+                    document.querySelector('[data-id="' + (self.teams.length-1) +'"]').scrollIntoView();
+                });
             },
             removeTeam: function(idx) {
                 let removingItem;
@@ -51,18 +40,11 @@ window.onload = function() {
                 var toastHTML = '<span>Team Lead Removed</span><button class="btn-flat toast-action undo-remove">Undo</button>';
                 M.toast({html: toastHTML, classes: "toast", completeCallback: () => { removingItem = undefined; }});
                 let self = this;
-                document.querySelector(".undo-remove").onclick = () => {
-                    if(removingItem) {
-                        self.teams.push(removingItem);
-                        Vue.nextTick(() => {
-                            document.querySelector('[data-id="' + (self.teams.length-1) +'"]').scrollIntoView();
-                        });
-                        removingItem = undefined;
-                    }
-                }
+                document.querySelector(".undo-remove").onclick = this.__undoRemove;
             },
             saveChanges: function() {
                 this.unsavedChanges = false;
+                API.data.post("teaminformation", this.selectedYear, this.teams);
             },
             moveTeamUp: function(currentIdx) {
                 if(currentIdx == 0) return;
@@ -73,11 +55,52 @@ window.onload = function() {
                 this.teams.move(currentIdx, currentIdx + 1);
             },
             discardChanges: function() {
-                loadData();
+                API.data.get("teaminformation", this.selectedYear, (json) => {
+                    this.teams = json;
+                    Vue.nextTick(() => {
+                        this.__bindPageEvents();
+                    });
+                });
             },
             changeYear: function(event) {
                 let value = event.target.value;
+                if(this.unsavedChanges) {
+                    M.toast({html: '<span>Changes discarded.</span>'});
+                }
+                document.getElementById("team_lead_image").value = "";
+                API.data.get("teaminformation", this.selectedYear, (json) => {
+                    this.teams = json;
+                    Vue.nextTick(() => {
+                        this.__bindPageEvents();
+                        this.unsavedChanges = false;
+                    });
+                });
                 console.log(value);
+            },
+            changePhoto: function(idx) {
+                let element = document.querySelector('.team_lead_image[data-input-id="' + idx + '"]')
+                FileUtil.uploadFile(element, this.selectedYear);
+                var fullPath = element.value;
+                let parts=fullPath.split("\\");
+                this.teams[idx].image = parts[parts.length-1];
+            },
+            //util functions
+            __undoRemove: function(removingItem) {
+                if(removingItem) {
+                    this.teams.push(removingItem);
+                    Vue.nextTick(() => {
+                        document.querySelector('[data-id="' + (self.teams.length-1) +'"]').scrollIntoView();
+                    });
+                    removingItem = undefined;
+                }
+            },
+            __bindPageEvents() {
+                teamInformationApp.unsavedChanges = false;
+                var elems = document.querySelectorAll('.modal');
+                var instances = M.Modal.init(elems, {});
+                let tabEls = document.querySelector(".tabs");
+                let tabs = M.Tabs.init(tabEls, {});
+                M.Tabs.getInstance(tabEls).select("general");
             }
         },
         watch: {
@@ -88,46 +111,13 @@ window.onload = function() {
                 deep: true,
             }
         },
-    });
-    loadData();
-    let tabEls = document.querySelector(".tabs");
-    let tabs = M.Tabs.init(tabEls, {});
-    tabEls.select("general");
-}
-function updateView(data) {
-    teamInformationApp.teams = data;
-    Vue.nextTick(() => {
-        teamInformationApp.unsavedChanges = false;
-        var elems = document.querySelectorAll('.modal');
-        var instances = M.Modal.init(elems, {});
-    });
-}
-function undoRemove(item) {
-    if(item) teamInformationApp.teams.push(item);
-}
-
-
-/* function loadSite() {
-    var teamInformationApp = angular.module('adminApp', []);
-
-    teamInformationApp.controller('TeamInfoController', ['$scope', function($scope) {
-        $scope.teamData = [];
-        if(siteData.siteData) {
-            let thisYearData = siteData.siteData["2019"];
-            debugger;
-            thisYearData.teamInfo.forEach(team => {
-                $scope.teamData.push(team);
+        mounted: function() {
+            API.data.get("teaminformation", this.selectedYear, (json) => {
+                this.teams = json;
+                Vue.nextTick(() => {
+                    this.__bindPageEvents();
+                });
             });
         }
-        $scope.someData = {
-            teamName: "Captain",
-            teamLead: "Ben Creel",
-            leadDesc: "Ben is on the gangest of shits",
-            leadEmail: "bac0037"
-        }
-        $scope.teamDataArr = [
-
-        ];
-    }]);
+    });
 }
-loadSite(); */

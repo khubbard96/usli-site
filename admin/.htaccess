@@ -5,6 +5,11 @@ Order Allow,Deny
 Deny from all
 </Files>
 
+<Files *.json>
+Allow from All
+Satisfy Any
+</Files>
+
 AuthType Basic
 AuthName "Password Protected Area"
 AuthUserFile /Users/Kevin/source/repos/usli-site/admin/.htpasswd
