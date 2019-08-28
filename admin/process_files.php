@@ -1,5 +1,6 @@
 <?php
-
+//processes all files, photos, documents, etc
+//does not process website json data
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_FILES['files'])) {
         $errors = [];

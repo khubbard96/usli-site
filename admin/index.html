@@ -28,6 +28,20 @@
             color: grey;
             font-style: italic;
         }
+        .field-header {
+            margin: 7px 0;
+            font-size: 13pt;
+        }
+        .field-description {
+            font-size: 10pt;
+            color: grey;
+        }
+        .links-container:not(:last-of-type) {
+            margin-bottom: 50px;
+        }
+        .select-wrapper * {
+            color: black !important;
+        }
     </style>
 </head>
 
@@ -43,48 +57,180 @@
         </div>
     </nav>
 
-    <div class="row" style="margin-top: 6px;">
+    <div class="row" id="info_view_selector" style="margin-top: 6px;">
         <div class="col s8 offset-s2">
             <ul class="tabs">
-                <li class="tab col s3"><a href="#general">General</a></li>
-                <li class="tab col s3"><a href="#team">Team Info</a></li>
+                <li class="tab col s3" data-activates="general_info_container"><a href="#general">General</a></li>
+                <li class="tab col s3" data-activates="team_info_container"><a href="#team">Team Info</a></li>
                 <li class="tab col s3"><a href="#sponsor">Sponsor/TA</a></li>
-                <li class="tab col s3"><a href="#media">Media Carousel</a></li>
+                <li class="tab col s3" data-activates="carousel_info_container"><a href="#media">Media Carousel</a></li>
             </ul>
         </div>
     </div>
     <div class="divider"></div>
 
-    <div id="general_info_container">
+    <div id="general_info_container" class="info_view_container">
         <!-- 
             project name
             current academic year
             basic contact information
             project specifics - need to figure this out ("Project NOVA II" tab on website)
             home page links
+            
+            :maybe:
+            sponsors page
+
         -->
         <div class="row">
-            <div class="col s8 offset-s2">
+            <div class="col s10 offset-s1">
                 <div class="row">
+                    <div class="col s4 offset-s2">
+                        <div class="field-header">Current Academic Year</div>
+                        <div class="field-description">Sets what year's information should be used
+                            throughout the site.
+                        </div>
+                    </div>
+                    <div class="col s4 input-field">
+                        <select id="general_year_selector" v-model="generalInfo.currentAcademicYear">
+                            <option value="2019">2019-2020</option>
+                            <option value="2018">2018-2020</option>
+                        </select>
+                        <label for="general_year_selector">Academic Year</label>
+                    </div>
+                </div>
+                <div class="divider"></div>
+                <div class="row">
+                    <div class="col s4 offset-s2">
+                        <div class="field-header">Project Name</div>
+                        <div class="field-description">The name of the current year's project.
+                            This data will be used in several places across the site, including 
+                            the site header and some dropdowns.
+                        </div>
+                    </div>
+                    <div class="col s4 input-field">
+                        <input id="current_project_name" placeholder="" type="text" v-model="generalInfo.projectName"/>
+                        <label for="current_project_name">Current Project Name</label>
+                    </div>
+                </div>
+                <div class="divider"></div>
+                <div class="row">
+                    <div class="col s4 offset-s2">
+                        <div class="field-header">Basic Contact Information</div>
+                        <div class="field-description">This information is displayed on the "Contact Us"
+                            page in About. Contains information about team meeting location, as well as
+                            contact information for the Sponsor and the current Team Captain
+                        </div>
+                    </div>
+                    <div class="col s4">
+                        <div class="field-header">Location Info</div>
+                        <div class="input-field">
+                            <input id="location_name" placeholder="" type="text" v-model="generalInfo.basicContact.location.name"/>
+                            <label for="location_name">Name</label>
+                        </div>
+                        <div class="input-field">
+                            <input id="location_addr" placeholder="" type="text" v-model="generalInfo.basicContact.location.address"/>
+                            <label for="location_addr">Address</label>
+                        </div>
+                        <div class="input-field">
+                            <input id="location_city_state" placeholder="" type="text" v-model="generalInfo.basicContact.location.citystate"/>
+                            <label for="location_city_state">City, State, ZIP</label>
+                        </div>
+                        <div class="field-header">Sponsor Info</div>
+                        <div class="input-field">
+                            <input id="sponsor_name" placeholder="" type="text" v-model="generalInfo.basicContact.sponsor.name"/>
+                            <label for="sponsor_name">Name</label>
+                        </div>
+                        <div class="input-field">
+                            <input id="sponsor_title" placeholder="" type="text" v-model="generalInfo.basicContact.sponsor.title"/>
+                            <label for="sponsor_title">Title</label>
+                        </div>
+                        <div class="input-field">
+                            <input id="sponsor_email" placeholder="" type="text" v-model="generalInfo.basicContact.sponsor.email"/>
+                            <label for="sponsor_email">Email</label>
+                        </div>
+                        <div class="field-header">Team Captain Info</div>
+                        <div class="input-field">
+                            <input id="captain_name" placeholder="" type="text" v-model="generalInfo.basicContact.teamCaptain.name"/>
+                            <label for="captain_name">Name</label>
+                        </div>
+                        <div class="input-field">
+                            <input id="captain_title" placeholder="" type="text" v-model="generalInfo.basicContact.teamCaptain.title"/>
+                            <label for="captain_title">Title</label>
+                        </div>
+                        <div class="input-field">
+                            <input id="captain_email" placeholder="" type="text" v-model="generalInfo.basicContact.teamCaptain.email"/>
+                            <label for="captain_email">Email</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="divider"></div>
+                <div class="row">
+                    <div class="col s4 offset-s2">
+                        <div class="field-header">Home Page Links</div>
+                        <div class="field-description">Controls the links on the left-hand side of the
+                            home page.
+                        </div>
+                    </div>
+                    <div class="col s4">
 
+                        <ul class="collapsible">
+                            <li v-for="(section, idx) in generalInfo.homepageLinkSections" :data-id="idx">
+                                <div class="collapsible-header valign-wrapper">
+                                    Section {{ idx + 1 }}
+                                    <a class="waves-effect waves-light btn-flat red-text" v-on:click.stop="removeLinkSection(idx)" style="margin-left: auto;">DELETE</a>
+                                </div>
+                                <div class="collapsible-body">                                    
+                                    <div class="links-container" v-for="(link, link_idx) in section" :data-link-id="link_idx">       <div class="input-field">
+                                            <input id="link_display_name" type="text" placeholder="" v-model="link.displayName" />
+                                            <label for="link_display_name">Link Display Name</label>
+                                        </div>
+                                        <div class="input-field">
+                                            <input id="link_hyper" type="text" placeholder="" v-model="link.hyperlink" />
+                                            <label for="link_hyper">Hyperlink</label>
+                                            <a class="waves-effect waves-light btn-small red" style="float: right;" v-on:click="removeLink(idx, link_idx)"><i class="material-icons">delete</i></a>
+                                        </div>
+                                    </div>
+                                    <a class="waves-effect waves-light btn-flat blue-text" v-on:click="addLink(idx)">ADD LINK</a>
+
+
+                                </div>
+                            </li>
+                        </ul>
+                        <a class="waves-effect waves-light btn blue" v-on:click="addLinkSection" style="float: right;"><i class="material-icons left">add</i>add section</a>
+                    </div>
+                </div>
+                <div class="divider"></div>
+            </div>
+            <div class="page-actions row" style="position: fixed; 
+                        bottom: 0; 
+                        width: 65%; 
+                        margin: 0 17.5%; 
+                        background-color: rgba(0, 0, 0, .6);
+                        z-index: 10;
+                        padding: 15px 0;
+                        border-radius: 10px 10px 0 0;">
+                <div class="col s12 center-align">
+                    <a class="waves-effect waves-light btn blue" v-on:click="saveChanges"
+                        v-bind:class=" { disabled: !unsavedChanges } "><i class="material-icons left">check</i>save changes</a>
+                    <a class="waves-effect waves-light btn red modal-trigger" href="#confirm-discard-changes"
+                        v-bind:class=" { disabled: !unsavedChanges } "><i class="material-icons left">delete</i>discard changes</a>
                 </div>
             </div>
-
         </div>
-
-
-    </div>
-    <div id="team_info_container" style="display: none;">
-        <div class="year-selector row">
-            <div class="col s3 offset-s2">
-                <label for="choose_year">Choose academic year</label>         
-                <select id="choose_year" class="browser-default" v-on:change="changeYear" v-model="selectedYear">
-                    <option value="2019">2019-2020</option>
-                    <option value="2018">2018-2019</option>
-                </select>
+        <!-- confirm discard changes modal -->
+        <div id="confirm-discard-changes" class="modal">
+            <div class="modal-content">
+                <h4>Discard Changes</h4>
+                <p>Are you sure you want to discard all changes since you last saved?</p>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="modal-close waves-effect waves-green btn-flat" v-on:click="discardChanges">Discard</a>
+                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancel</a>
             </div>
         </div>
-        <div class="divider"></div>
+        
+        </div>
+    <div id="team_info_container" class="info_view_container hide">
         <div id="team_information_rows">
             <div class="row-container row" v-for="(team, idx) in teams" :data-id="idx">
                 <div class="col s1 offset-s2">
@@ -145,8 +291,6 @@
                 <a class="waves-effect waves-light btn red modal-trigger" href="#confirm-discard-changes" v-bind:class=" { disabled: !unsavedChanges } "><i class="material-icons left">delete</i>discard changes</a>
             </div>
         </div>
-
-
         <!-- confirm discard changes modal -->
         <div id="confirm-discard-changes" class="modal">
             <div class="modal-content">
@@ -158,7 +302,6 @@
                 <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancel</a>
             </div>
         </div>
-
         <!-- confirm discard changes modal -->
         <div id="save-changes-before-proceeding" class="modal">
             <div class="modal-content">
@@ -168,6 +311,58 @@
             <div class="modal-footer">
                 <a href="#!" class="modal-close waves-effect waves-green btn-flat">Save & Continue</a>
                 <a href="#!" class="modal-close waves-effect waves-green btn-flat">Continue W/O Save</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="carousel_info_container" class="info_view_container hide">
+        <div class="row">
+            <div class="col s8 offset-s2">
+                <div class="row carousel-row" v-for="(image, idx) in carouselImages" :data-id="idx">
+                    <div class="col s3 carousel-image-container">
+                        <div class="" style="font-size: 14pt; font-weight: bold;"> Image {{ idx + 1 }}</div>
+                        <img style="width: 100%;" onerror="if (this.src != 'error.png') this.src = './images/error.png';" :src="image.src" />
+                    </div> 
+                    <div class="col s8 carousel-image-details">
+                        <div class="input-field">
+                            <input id="image-title" type="text" placeholder="" v-model="image.title" />
+                            <label for="image-title">Image Title</label>
+                        </div>
+                        <div class="input-field">
+                            <textarea class="materialize-textarea" id="image_description" placeholder="" v-model="image.desc"></textarea>
+                            <label for="image_description">Image Description</label>
+                        </div>
+                        <div class="carousel-image-actions right-align">
+                            <a class="waves-effect waves-light btn blue" title="Change Image" v-on:click="openPhotoModal(idx)"><i class="material-icons">photo</i></a>
+                            <a class="waves-effect waves-light btn red" title="Delete Image" v-on:click="deleteImage(idx)"><i class="material-icons">delete</i></a>
+                        </div>
+                    </div>
+                    <div class="col s1 carousel-image-order">
+                        <div>
+                            <a class="waves-effect waves-light btn blue lighten-1" title="Move Image Up" v-on:click="moveImageUp(idx)"><i class="material-icons">arrow_upward</i></a>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <a class="waves-effect waves-light btn blue lighten-1" title="Move Image Down" v-on:click="moveImageDown(idx)"><i class="material-icons">arrow_downward</i></a>
+                        </div>
+                    </div>
+                    <div class="carousel-image-input hide"><input type="file" class="input_carousel_image" v-on:change="changePhoto(idx)"/></div>
+                </div>
+            </div>
+        </div>
+        <div class="page-actions row" style="position: fixed; 
+                bottom: 0; 
+                width: 65%; 
+                margin: 0 17.5%; 
+                background-color: rgba(0, 0, 0, .6);
+                z-index: 10;
+                padding: 15px 0;
+                border-radius: 10px 10px 0 0;">
+            <div class="col s12 center-align">
+                <a class="waves-effect waves-light btn blue" v-on:click="addPhoto"><i class="material-icons left">add</i>add photo</a>
+                <a class="waves-effect waves-light btn blue" v-on:click="saveChanges"
+                    v-bind:class=" { disabled: !unsavedChanges } "><i class="material-icons left">check</i>save changes</a>
+                <a class="waves-effect waves-light btn red modal-trigger" href="#confirm-discard-changes"
+                    v-bind:class=" { disabled: !unsavedChanges } "><i class="material-icons left">delete</i>discard changes</a>
             </div>
         </div>
     </div>

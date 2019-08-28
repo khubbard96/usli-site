@@ -1,4 +1,7 @@
 <?php
+//handles all site json data
+//does not handle files, photos, documents, etc
+
     //pull in all data, format, etc
     $str_json = file_get_contents('php://input');
     $data = json_decode($str_json);

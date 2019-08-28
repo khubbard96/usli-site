@@ -36,10 +36,10 @@ const API = {
 }
 
 const FileUtil = {
-    uploadFile: function(viewInput, year) {
+    uploadFile: function(viewInput, year, callback) {
         //applies to any file - image, document, pdf, etc etc
         //view input is the file input element
-        const files = document.querySelector('[type=file]').files;
+        const files = viewInput.files;
         const formData = new FormData();
         for (let i = 0; i < files.length; i++) {
             let file = files[i];          
@@ -50,7 +50,8 @@ const FileUtil = {
             method: 'POST',
             body: formData,
         }).then(response => {
-            console.log(response)
+            //console.log(response)
+            if(callback) callback();
         });
     }
 }
